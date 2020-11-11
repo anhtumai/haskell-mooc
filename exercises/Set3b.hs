@@ -20,7 +20,6 @@
 -- Feel free to use if-then-else, guards, and ordering functions (< and > etc.).
 --
 -- The tests will check that you haven't added imports :)
-
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Set3b where
@@ -39,7 +38,11 @@ import Mooc.Todo
 --   buildList 7 0 3 ==> [3]
 
 buildList :: Int -> Int -> Int -> [Int]
-buildList start count end = todo
+buildList start count end = buildList' start count [end]
+
+buildList' :: Int -> Int -> [Int] -> [Int]
+buildList' _ 0 result = result
+buildList' start count result = buildList' start (count - 1) (start : result)
 
 ------------------------------------------------------------------------------
 -- Ex 2: given i, build the list of sums [1, 1+2, 1+2+3, .., 1+2+..+i]
@@ -49,7 +52,11 @@ buildList start count end = todo
 -- Ps. you'll probably need a recursive helper function
 
 sums :: Int -> [Int]
-sums i = todo
+sums i = sums' i [div (i * (i + 1)) 2]
+
+sums' :: Int -> [Int] -> [Int]
+sums' 1 result = result
+sums' i result = sums' (i -1) (((head result) - i) : result)
 
 ------------------------------------------------------------------------------
 -- Ex 3: define a function mylast that returns the last value of the
@@ -63,7 +70,8 @@ sums i = todo
 --   mylast 0 [1,2,3] ==> 3
 
 mylast :: a -> [a] -> a
-mylast def xs = todo
+mylast def [] = def
+mylast def xs = head $ reverse xs
 
 ------------------------------------------------------------------------------
 -- Ex 4: safe list indexing. Define a function indexDefault so that
@@ -84,7 +92,9 @@ mylast def xs = todo
 --   indexDefault ["a","b","c"] (-1) "d" ==> "d"
 
 indexDefault :: [a] -> Int -> a -> a
-indexDefault xs i def = todo
+indexDefault xs 0 _ = head xs
+indexDefault xs i def | i < 0 || i >= length xs = def
+indexDefault xs i def = indexDefault (drop 1 xs) (i -1) def
 
 ------------------------------------------------------------------------------
 -- Ex 5: define a function that checks if the given list is in
@@ -93,7 +103,8 @@ indexDefault xs i def = todo
 -- Use pattern matching and recursion to iterate through the list.
 
 sorted :: [Int] -> Bool
-sorted xs = todo
+sorted xs | (length xs == 0 || length xs == 1) = True
+sorted xs = if (xs !! 1 > xs !! 0) then sorted (drop 1 xs) else False
 
 ------------------------------------------------------------------------------
 -- Ex 6: compute the partial sums of the given list like this:
@@ -105,7 +116,11 @@ sorted xs = todo
 -- Use pattern matching and recursion (and the list constructors : and [])
 
 sumsOf :: [Int] -> [Int]
-sumsOf xs = todo
+sumsOf xs = sumsOf' xs []
+
+sumsOf' :: [Int] -> [Int] -> [Int]
+sumsOf' [] result = result
+sumsOf' xs result = sumsOf' (take (length xs - 1) xs) ((sum xs) : result)
 
 ------------------------------------------------------------------------------
 -- Ex 7: implement the function merge that merges two sorted lists of
@@ -118,7 +133,15 @@ sumsOf xs = todo
 --   merge [1,1,6] [1,2]   ==> [1,1,1,2,6]
 
 merge :: [Int] -> [Int] -> [Int]
-merge xs ys = todo
+merge xs ys = merge' xs ys []
+
+merge' :: [Int] -> [Int] -> [Int] -> [Int]
+merge' [] ys result = result ++ ys
+merge' xs [] result = result ++ xs
+merge' xs ys result =
+  if head xs < head ys
+    then merge' (drop 1 xs) ys (result ++ [head xs])
+    else merge' xs (drop 1 ys) (result ++ [head ys])
 
 ------------------------------------------------------------------------------
 -- Ex 8: define the function mymaximum that takes a list and a
@@ -151,7 +174,12 @@ mymaximum bigger initial xs = todo
 -- Use recursion and pattern matching. Do not use any library functions.
 
 map2 :: (a -> b -> c) -> [a] -> [b] -> [c]
-map2 f as bs = todo
+map2 f as bs = map2' f as bs []
+
+map2' :: (a -> b -> c) -> [a] -> [b] -> [c] -> [c]
+map2' _ [] _ result = result
+map2' _ _ [] result = result
+map2' f as bs result = map2' f (drop 1 as) (drop 1 bs) (result ++ [f (head as) (head bs)])
 
 ------------------------------------------------------------------------------
 -- Ex 10: implement the function maybeMap, which works a bit like a
@@ -175,4 +203,4 @@ map2 f as bs = todo
 --   ==> []
 
 maybeMap :: (a -> Maybe b) -> [a] -> [b]
-maybeMap f xs = todo
+maybeMap f xs = map fromJust $ filter isJust $ map f xs
