@@ -17,11 +17,7 @@ import Mooc.Todo
 binomial :: Integer -> Integer -> Integer
 binomial n 0 = 1
 binomial 0 k = if k > 0 then 0 else 1
-<<<<<<< HEAD
 binomial n k = binomial (n -1) k + binomial (n -1) (k -1)
-=======
-binomial n k = (binomial (n -1) k) + (binomial (n -1) (k -1))
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 2: implement the odd factorial function. Odd factorial is like
@@ -34,11 +30,7 @@ binomial n k = (binomial (n -1) k) + (binomial (n -1) (k -1))
 oddFactorial :: Integer -> Integer
 oddFactorial 0 = 0
 oddFactorial 1 = 1
-<<<<<<< HEAD
 oddFactorial n = if odd n then n * oddFactorial (n -2) else oddFactorial (n -1)
-=======
-oddFactorial n = if odd n then n * (oddFactorial (n -2)) else oddFactorial (n -1)
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 3: implement the Euclidean Algorithm for finding the greatest
@@ -78,11 +70,7 @@ oddFactorial n = if odd n then n * (oddFactorial (n -2)) else oddFactorial (n -1
 myGcd :: Integer -> Integer -> Integer
 myGcd x 0 = x
 myGcd 0 y = y
-<<<<<<< HEAD
 myGcd x y = if x >= y then myGcd (x - y) y else myGcd x (y - x)
-=======
-myGcd x y = if x >= y then (myGcd (x - y) y) else (myGcd x (y - x))
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 4: Implement the function leftpad which adds space characters
@@ -103,11 +91,7 @@ duplicate :: String -> Int -> String
 duplicate string n = concat $ replicate n string
 
 leftpad :: String -> Int -> String
-<<<<<<< HEAD
 leftpad s y = if y > len then duplicate " " (y - len) ++ s else s
-=======
-leftpad s y = if y > len then ((duplicate " " (y - len)) ++ s) else s
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
   where
     len = length s
 
@@ -129,17 +113,10 @@ leftpad s y = if y > len then ((duplicate " " (y - len)) ++ s) else s
 
 countdownnumber :: Integer -> String
 countdownnumber 0 = ""
-<<<<<<< HEAD
 countdownnumber n = show n ++ "... " ++ countdownnumber (n -1)
 
 countdown :: Integer -> String
 countdown n = "Ready! " ++ countdownnumber n ++ "Liftoff!"
-=======
-countdownnumber n = (show n) ++ "... " ++ countdownnumber (n -1)
-
-countdown :: Integer -> String
-countdown n = "Ready! " ++ (countdownnumber n) ++ "Liftoff!"
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 6: implement the function smallestDivisor that returns the
@@ -157,17 +134,10 @@ countdown n = "Ready! " ++ (countdownnumber n) ++ "Liftoff!"
 -- Hint: remember the mod function!
 
 smallestDivisor' :: Integer -> Integer -> Integer
-<<<<<<< HEAD
 smallestDivisor' i n = if n `mod` i == 0 then i else smallestDivisor' (i + 1) n
 
 smallestDivisor :: Integer -> Integer
 smallestDivisor n = if even n then 2 else smallestDivisor' 3 n
-=======
-smallestDivisor' i n = if (n `mod` i == 0) then i else (smallestDivisor' (i + 1) n)
-
-smallestDivisor :: Integer -> Integer
-smallestDivisor n = if (n `mod` 2 == 0) then 2 else smallestDivisor' 3 n
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 7: implement a function isPrime that checks if the given number
@@ -178,11 +148,7 @@ smallestDivisor n = if (n `mod` 2 == 0) then 2 else smallestDivisor' 3 n
 isPrime :: Integer -> Bool
 isPrime 0 = False
 isPrime 1 = False
-<<<<<<< HEAD
 isPrime n = smallestDivisor n == n
-=======
-isPrime n = ((smallestDivisor n) == n)
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 8: implement a function biggestPrimeAtMost that returns the
@@ -197,8 +163,4 @@ isPrime n = ((smallestDivisor n) == n)
 --   biggestPrimeAtMost 10 ==> 7
 
 biggestPrimeAtMost :: Integer -> Integer
-<<<<<<< HEAD
 biggestPrimeAtMost n = if isPrime n then n else biggestPrimeAtMost (n -1)
-=======
-biggestPrimeAtMost n = if (isPrime n) then n else (biggestPrimeAtMost (n -1))
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5

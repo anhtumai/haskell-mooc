@@ -78,19 +78,11 @@ mapMaybe2 f (Just x) (Just y) = Just (f x y)
 palindromeHalfs :: [String] -> [String]
 palindromeHalfs xs = map firstHalf (filter palindrome xs)
 
-<<<<<<< HEAD
 firstHalf s = if even len then take (div len 2) s else take (div len 2 + 1) s
   where
     len = length s
 
 palindrome s = reverse s == s
-=======
-firstHalf s = if (mod len 2 == 0) then take (div len 2) s else take ((div len 2) + 1) s
-  where
-    len = length s
-
-palindrome s = (reverse s == s)
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 5: Implement a function capitalize that takes in a string and
@@ -111,11 +103,7 @@ capitalize :: String -> String
 capitalize s = unwords $ map capitalizeFirst $ words s
 
 capitalizeFirst :: String -> String
-<<<<<<< HEAD
 capitalizeFirst s = toUpper (head s) : tail s
-=======
-capitalizeFirst s = [(toUpper (head s))] ++ (tail s)
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 6: powers k max should return all the powers of k that are less
@@ -172,11 +160,7 @@ while check update value = if check value then while check update (update value)
 --   whileRight (step 1000) 3  ==> 1536
 
 whileRight :: (a -> Either b a) -> a -> b
-<<<<<<< HEAD
 whileRight f x = if isRight $ f x then whileRight f $ myFromRight $ f x else myFromLeft $ f x
-=======
-whileRight f x = if isRight $ f x then (whileRight f $ myFromRight $ f x) else (myFromLeft $ f x)
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 myFromLeft :: Either a b -> a
 myFromLeft (Left x) = x
@@ -254,16 +238,8 @@ sumRights l = sum $ map myFromRight $ filter isRight l
 --   multiCompose [(3*), (2^), (+1)] 0 ==> 6
 --   multiCompose [(+1), (2^), (3*)] 0 ==> 2
 
-<<<<<<< HEAD
 multiCompose :: [a -> a] -> a -> a
 multiCompose fs x = if null fs then x else multiCompose (init fs) (last fs x)
-=======
-multiCompose' :: [a -> a] -> a -> a
-multiCompose' fs x = if (null fs) then x else multiCompose' (drop 1 fs) ((head fs) x)
-
-multiCompose :: [a -> a] -> a -> a
-multiCompose fs x = multiCompose' (reverse fs) x
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 13: let's consider another way to compose multiple functions. Given
@@ -282,17 +258,10 @@ multiCompose fs x = multiCompose' (reverse fs) x
 --   multiApp reverse [tail, take 2, reverse] "foo" ==> ["oof","fo","oo"]
 --   multiApp concat [take 3, reverse] "race" ==> "racecar"
 
-<<<<<<< HEAD
 multiApp' :: [a -> b] -> a -> [b]
 multiApp' fs x = map ($ x) fs
 
 multiApp :: ([b] -> c) -> [a -> b] -> a -> c
-=======
-multiApp' :: [(a -> b)] -> a -> [b]
-multiApp' fs x = map ($ x) fs
-
-multiApp :: ([b] -> c) -> [(a -> b)] -> a -> c
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 multiApp f fs x = f (multiApp' fs x)
 
 ------------------------------------------------------------------------------
@@ -332,21 +301,12 @@ interpreter commands = interpreter' commands 0 0 []
 
 interpreter' :: [String] -> Int -> Int -> [String] -> [String]
 interpreter' [] _ _ result = result
-<<<<<<< HEAD
 interpreter' commands x y result = case head commands of
-=======
-interpreter' commands x y result = case (head commands) of
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
   "up" -> interpreter' new_commands x (y + 1) result
   "down" -> interpreter' new_commands x (y -1) result
   "left" -> interpreter' new_commands (x -1) y result
   "right" -> interpreter' new_commands (x + 1) y result
-<<<<<<< HEAD
   "printX" -> interpreter' new_commands x y (result ++ [show x])
   "printY" -> interpreter' new_commands x y (result ++ [show y])
-=======
-  "printX" -> interpreter' new_commands x y (result ++ [(show x)])
-  "printY" -> interpreter' new_commands x y (result ++ [(show y)])
->>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
   where
     new_commands = drop 1 commands
