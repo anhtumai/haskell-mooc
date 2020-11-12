@@ -128,7 +128,11 @@ fromJust (Just t) = t
 
 greet :: String -> Maybe String -> String
 greet first Nothing = "Hello, " ++ first ++ "!"
+<<<<<<< HEAD
 greet first last = "Hello, " ++ first ++ " " ++ fromJust last ++ "!"
+=======
+greet first last = "Hello, " ++ first ++ " " ++ (fromJust last) ++ "!"
+>>>>>>> 5474a4b2b45d0b37ec22eb17edfff6622735c9f5
 
 ------------------------------------------------------------------------------
 -- Ex 9: safe list indexing. Define a function safeIndex so that
