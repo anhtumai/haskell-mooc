@@ -22,6 +22,8 @@ import Data.Ord
 import qualified Data.Map as Map
 import Data.Array
 
+import Data.Maybe
+
 ------------------------------------------------------------------------------
 -- Ex 1: implement the function allEqual which returns True if all
 -- values in the list are equal.
@@ -161,7 +163,14 @@ winner scores player1 player2 = todo
 --     ==> Map.fromList [(False,3),(True,1)]
 
 freqs :: (Eq a, Ord a) => [a] -> Map.Map a Int
-freqs xs = todo
+freqs xs = freqs' xs (Map.fromList [])
+
+freqs' :: (Eq a, Ord a) => [a] -> Map.Map a Int -> Map.Map a Int
+freqs' [] result = result
+freqs' (x:xs) result = if isNothing check then  freqs' xs (Map.alter f x result) else freqs' xs (Map.insertWith (+) x 1 result)
+                            where
+                                check = Map.lookup x result
+                                f _ = Just 1
 
 ------------------------------------------------------------------------------
 -- Ex 10: recall the withdraw example from the course material. Write a
@@ -189,7 +198,15 @@ freqs xs = todo
 --     ==> fromList [("Bob",100),("Mike",50)]
 
 transfer :: String -> String -> Int -> Map.Map String Int -> Map.Map String Int
-transfer from to amount bank = todo
+transfer from to amount bank = case () of _
+                                            | isNothing fromAccount -> bank
+                                            | isNothing toAccount -> bank
+                                            | fromJust fromAccount < amount -> bank
+                                            | fromJust toAccount + amount < 0 -> bank
+                                            | otherwise -> Map.adjust (-1*amount +) from (Map.insertWith (+) to amount bank)
+                                where
+                                    fromAccount = Map.lookup from bank
+                                    toAccount = Map.lookup to bank
 
 ------------------------------------------------------------------------------
 -- Ex 11: given an Array and two indices, swap the elements in the indices.
@@ -199,7 +216,11 @@ transfer from to amount bank = todo
 --         ==> array (1,4) [(1,"one"),(2,"three"),(3,"two"),(4,"four")]
 
 swap :: Ix i => i -> i -> Array i a -> Array i a
-swap i j arr = todo
+swap i j arr = array (bounds arr) (map f (assocs arr))
+                        where f = \(x,y) -> case () of _
+                                                        | x == i -> (j,y)
+                                                        | x == j -> (i,y)
+                                                        | otherwise -> (x,y)
 
 ------------------------------------------------------------------------------
 -- Ex 12: given an Array, find the index of the largest element. You
@@ -210,4 +231,9 @@ swap i j arr = todo
 -- Hint: check out Data.Array.indices or Data.Array.assocs
 
 maxIndex :: (Ix i, Ord a) => Array i a -> i
-maxIndex = todo
+maxIndex arr = maxIndex' l (snd $ head l) (fst $ head l)
+                where l = assocs arr
+
+maxIndex' :: (Ord a) => [(i,a)] -> a -> i -> i
+maxIndex' [] maximum result = result
+maxIndex' ((x,y):xys) maximum result = if y > maximum then maxIndex' xys y x else maxIndex' xys maximum result
