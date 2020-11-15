@@ -127,8 +127,9 @@ longest' (xs:xss) max_length result
 
 incrementKey :: (Eq k, Num v) => k -> [(k,v)] -> [(k,v)]
 incrementKey key kvs = map f kvs
-                            where f = \(k,v) -> case k of
-                                        key  -> (k,v+1)
+                            where f = \(k,v) -> case () of _
+                                                            | k == key -> (k,v+1)
+                                                            | otherwise -> (k,v)
 
 ------------------------------------------------------------------------------
 -- Ex 7: compute the average of a list of values of the Fractional
@@ -218,7 +219,7 @@ transfer from to amount bank = case () of _
                                             | isNothing fromAccount -> bank
                                             | isNothing toAccount -> bank
                                             | fromJust fromAccount < amount -> bank
-                                            | fromJust toAccount + amount < 0 -> bank
+                                            | amount < 0 -> bank
                                             | otherwise -> Map.adjust (-1*amount +) from (Map.insertWith (+) to amount bank)
                                 where
                                     fromAccount = Map.lookup from bank
