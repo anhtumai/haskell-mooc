@@ -95,20 +95,18 @@ add x (Set xs) = if member x (Set xs) then Set xs else Set (sort (x : xs))
 data Event = AddEggs | AddFlour | AddSugar | Mix | Bake
   deriving (Eq, Show)
 
-data State = Start | Error | Finished | Done Event
+data State = Start | Error | Finished | EggsAdded | SugarAdded | FlourAdded | SugarFlourAdded | MixDone
   deriving (Eq, Show)
 
 step :: State -> Event -> State
 step Error _ = Error
-step Start AddEggs = Done AddEggs
-step Start _ = Error
-step (Done AddEggs) AddFlour = Done AddFlour
-step (Done AddEggs) AddSugar = Done AddSugar
-step (Done AddFlour) AddSugar = Done AddSugar
-step (Done AddSugar) AddFlour = Done AddFlour
-step (Done AddFlour) Mix = Done Mix
-step (Done AddSugar) Mix = Done Mix
-step (Done Mix) Bake = Finished
+step Start AddEggs = EggsAdded
+step EggsAdded AddFlour = FlourAdded
+step EggsAdded AddSugar = SugarAdded
+step FlourAdded AddSugar = SugarFlourAdded
+step SugarAdded AddFlour = SugarFlourAdded
+step SugarFlourAdded Mix = MixDone
+step MixDone Bake = Finished
 step Finished _ = Finished
 step _ _ = Error
 
@@ -168,8 +166,8 @@ instance Semigroup Velocity where
 --
 -- What are the class constraints for the instances?
 
-instance Eq a => Semigroup (Set a) where
-  (<>) (Set xs) (Set ys) = Set (union xs ys)
+instance (Eq a, Ord a) => Semigroup (Set a) where
+  (<>) (Set xs) (Set ys) = Set (sort (union xs ys))
 
 instance Ord a => Monoid (Set a) where
   mempty = emptySet
@@ -220,15 +218,19 @@ data Multiply2 = Multiply2 Int Int
 
 class Operation2 op where
   compute2 :: op -> Int
+  show2 :: op -> String
 
 instance Operation2 Add2 where
   compute2 (Add2 i j) = i + j
+  show2 (Add2 i j) = show i ++ "+" ++ show j
 
 instance Operation2 Subtract2 where
   compute2 (Subtract2 i j) = i - j
+  show2 (Subtract2 i j) = show i ++ "-" ++ show j
 
 instance Operation2 Multiply2 where
   compute2 (Multiply2 i j) = i * j
+  show2 (Multiply2 i j) = show i ++ "*" ++ show j
 
 ------------------------------------------------------------------------------
 -- Ex 9: validating passwords. Below you'll find a type
@@ -258,8 +260,9 @@ data PasswordRequirement
 
 passwordAllowed :: String -> PasswordRequirement -> Bool
 passwordAllowed s (MinimumLength n) = length s >= n
-passwordAllowed s (ContainsSome sub) = sub `isInfixOf` s
-passwordAllowed s (DoesNotContain sub) = not (sub `isInfixOf` s)
+passwordAllowed s (ContainsSome (x : xs)) = [x] `isInfixOf` s || passwordAllowed s (ContainsSome xs)
+passwordAllowed _ (ContainsSome "") = False
+passwordAllowed s (DoesNotContain sub) = not (passwordAllowed s (ContainsSome sub))
 passwordAllowed s (And requirement1 requirement2) = passwordAllowed s requirement1 && passwordAllowed s requirement2
 passwordAllowed s (Or requirement1 requirement2) = passwordAllowed s requirement1 || passwordAllowed s requirement2
 
@@ -283,17 +286,22 @@ passwordAllowed s (Or requirement1 requirement2) = passwordAllowed s requirement
 --     ==> "(3*(1+1))"
 --
 
-data Arithmetic = Number Integer | Operation String Arithmetic Arithmetic
+data Arithmetic = Number Integer | Add Arithmetic Arithmetic | Multiply Arithmetic Arithmetic
   deriving (Show)
 
 literal :: Integer -> Arithmetic
 literal x = Number x
 
 operation :: String -> Arithmetic -> Arithmetic -> Arithmetic
-operation "+" (Number x1) (Number x2) = Number (x1 + x2)
+operation "+" arith1 arith2 = Add arith1 arith2
+operation "*" arith1 arith2 = Multiply arith1 arith2
 
 evaluate :: Arithmetic -> Integer
 evaluate (Number x) = x
+evaluate (Add arith1 arith2) = evaluate arith1 + evaluate arith2
+evaluate (Multiply arith1 arith2) = evaluate arith1 * evaluate arith2
 
 render :: Arithmetic -> String
-render arith = "khos vcl"
+render (Number x) = show x
+render (Add arith1 arith2) = "(" ++ render arith1 ++ "+" ++ render arith2 ++ ")"
+render (Multiply arith1 arith2) = "(" ++ render arith1 ++ "*" ++ render arith2 ++ ")"
