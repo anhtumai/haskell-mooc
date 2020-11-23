@@ -506,7 +506,18 @@ data Blur = Blur
 instance Transform Blur where
   apply Blur (Picture base) = Picture f
     where
-      f (Coord x y) = white
+      f coord = averageColor (map base (neighbours coord))
+
+neighbours :: Coord -> [Coord]
+neighbours (Coord x y) = [Coord x y, Coord (x -1) y, Coord (x + 1) y, Coord x (y -1), Coord x (y + 1)]
+
+averageColor :: [Color] -> Color
+averageColor colors = Color r g b
+  where
+    r = div (foldr (\color result -> result + getRed color) 0 colors) len
+    g = div (foldr (\color result -> result + getGreen color) 0 colors) len
+    b = div (foldr (\color result -> result + getBlue color) 0 colors) len
+    len = length colors
 
 ------------------------------------------------------------------------------
 
@@ -525,9 +536,8 @@ data BlurMany = BlurMany Int
   deriving (Show)
 
 instance Transform BlurMany where
-  apply (BlurMany count) (Picture base) = Picture f
-    where
-      f (Coord x y) = white
+  apply (BlurMany 0) picture = picture
+  apply (BlurMany count) picture = apply (BlurMany (count - 1)) (apply Blur picture)
 
 ------------------------------------------------------------------------------
 
